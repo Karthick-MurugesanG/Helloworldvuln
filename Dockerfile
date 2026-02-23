@@ -1,21 +1,17 @@
-# Intentionally vulnerable base image (old + known CVEs)
-FROM nginx:1.14-alpine
+FROM ubuntu:16.04
 
-# Switch to root (bad practice)
 USER root
 
-# Install unnecessary and outdated packages (adds CVEs)
-RUN apk update && \
-    apk add --no-cache bash curl openssl
+RUN apt-get update && \
+    apt-get install -y \
+    openssl \
+    bash \
+    curl \
+    wget \
+    apache2
 
-# Disable security best practices (no non-root user)
-# No file permission hardening
+COPY index.html /var/www/html/index.html
 
-# Copy vulnerable webpage
-COPY index.html /usr/share/nginx/html/index.html
-
-# Expose HTTP only (no TLS)
 EXPOSE 80
 
-# Run nginx in foreground
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["apachectl", "-D", "FOREGROUND"]
