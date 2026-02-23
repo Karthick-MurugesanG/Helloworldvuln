@@ -1,11 +1,21 @@
+# Intentionally vulnerable base image (old + known CVEs)
 FROM nginx:1.14-alpine
-#old nginx → known CVEs
 
-# Run as root (intentional misconfiguration)
+# Switch to root (bad practice)
 USER root
 
-# Copy webpage
+# Install unnecessary and outdated packages (adds CVEs)
+RUN apk update && \
+    apk add --no-cache bash curl openssl
+
+# Disable security best practices (no non-root user)
+# No file permission hardening
+
+# Copy vulnerable webpage
 COPY index.html /usr/share/nginx/html/index.html
 
-# Expose web port
+# Expose HTTP only (no TLS)
 EXPOSE 80
+
+# Run nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]
