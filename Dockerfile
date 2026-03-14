@@ -1,17 +1,11 @@
-FROM ubuntu:16.04
+FROM nginx:1.14-alpine
+#old nginx → known CVEs
 
+# Run as root (intentional misconfiguration)
 USER root
 
-RUN apt-get update && \
-    apt-get install -y \
-    openssl \
-    bash \
-    curl \
-    wget \
-    apache2
+# Copy webpage
+COPY index.html /usr/share/nginx/html/index.html
 
-COPY index.html /var/www/html/index.html
-
+# Expose web port
 EXPOSE 80
-
-CMD ["apachectl", "-D", "FOREGROUND"]
