@@ -7,5 +7,6 @@ USER root
 # Copy webpage
 COPY index.html /usr/share/nginx/html/index.html
 
+
 # Expose web port
 EXPOSE 80
